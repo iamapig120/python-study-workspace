@@ -1,5 +1,5 @@
 import tkinter
-import Calculator as calc
+import CalculatorV2 as calc
 buttonSize = 64
 window = tkinter.Tk()
 window.geometry(""+str(buttonSize*4)+"x"+str(buttonSize*6))
@@ -16,10 +16,10 @@ def appendText(text: str):
         inputLine.config(text=inputLine["text"][:-1])
         if len(inputLine["text"]) == 0:
             inputLine.config(text="0")
+    elif text == "=":
+        inputLine.config(text=str(calc.calc(inputLine["text"])))
     elif inputLine["text"] == "0":
         inputLine.config(text=text)
-    elif text == "=":
-        inputLine.config(text=calc.calc(inputLine["text"]))
     else:
         inputLine.config(text=inputLine["text"] + text)
     print("Label", inputLine["text"])

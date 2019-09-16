@@ -1,3 +1,5 @@
+# 因为字符串解析有问题，已废弃
+
 # 所有要进行检查的字符集
 numChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
@@ -155,5 +157,5 @@ def calc(formula: str) -> str:
 
 
 # 模块化
-while True:
-    print("运算结果\n" + calc(input("输入算式\n"))+'\n')
+# while True:
+#     print("运算结果\n" + calc(input("输入算式\n"))+'\n')
