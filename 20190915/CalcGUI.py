@@ -6,14 +6,15 @@ window.geometry(""+str(buttonSize*4)+"x"+str(buttonSize*6+buttonSize//2))
 window.resizable(False, False)
 window.title("计算器")
 inputLine = tkinter.Label(window, justify=tkinter.RIGHT,
-                          text='0', font="Helvetica 12", padx=8, anchor="e")
-inputLine.place(x=0, y=0, width=buttonSize*4, height=buttonSize/2)
+                          text='', font="Helvetica 12", padx=8, anchor="e")
+inputLine.place(x=0, y=buttonSize//8, width=buttonSize*4, height=buttonSize//2)
 
 resultLine = tkinter.Label(window, justify=tkinter.RIGHT,
                            text='0', font="Helvetica 24", padx=8, anchor="e")
-resultLine.place(x=0, y=buttonSize/2, width=buttonSize*4, height=buttonSize)
+resultLine.place(x=0, y=buttonSize//2, width=buttonSize*4, height=buttonSize)
 
 calced_state = 0
+symbols = ['+', '-', '*', '/', '%', '^']
 
 
 def appendText(text: str):
@@ -23,14 +24,14 @@ def appendText(text: str):
         if calced_state == 1:
             inputLine.config(text=resultLine["text"])
         else:
-            inputLine.config(text="0")
+            inputLine.config(text="")
         resultLine.config(text="0")
         calced_state = 0
     if text == "AC":
         # inputLine.config(text=inputLine["text"][:-1])
         # if len(inputLine["text"]) == 0:
         #     inputLine.config(text="0")
-        inputLine.config(text="0")
+        inputLine.config(text="")
         resultLine.config(text="0")
     elif text == "=":
         result: str
@@ -46,12 +47,20 @@ def appendText(text: str):
             inputLine.config(text=inputLine["text"] + text)
             if not calced_state:
                 calced_state = -1
-    elif inputLine["text"] == "0":
-        inputLine.config(text=text)
+    elif inputLine["text"] == "":
+        if text in symbols:
+            if not text == '-':
+                inputLine.config(text="0")
+        inputLine.config(text=inputLine["text"] + text)
         resultLine.config(text=str(calc.calc(inputLine["text"], portion=True)))
     else:
         inputLine.config(text=inputLine["text"] + text)
-        resultLine.config(text=str(calc.calc(inputLine["text"], portion=True)))
+        try:
+            resultLine.config(
+                text=str(calc.calc(inputLine["text"], portion=True)))
+        except calc.CalcError as err:
+            resultLine.config(text=err.errorinfo)
+            calced_state = 2
     # print("Label", inputLine["text"])
 
 
