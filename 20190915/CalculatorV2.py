@@ -55,7 +55,7 @@ def calc(formula: str, *, portion=False) -> int or str:
     # 给定 a,b,符号 计算结果
 
     def __calc_a_b__(a: int or str, b: int or str, symbol: str) -> int:
-        print(a, b, symbol)
+        print(b, a, symbol)
         a = int(a)
         b = int(b)
         if symbol == '+':
