@@ -33,8 +33,10 @@ def appendText(text: str):
             resultLine.config(text=result)
     elif inputLine["text"] == "0":
         inputLine.config(text=text)
+        resultLine.config(text=str(calc.calc(inputLine["text"],portion=True)))
     else:
         inputLine.config(text=inputLine["text"] + text)
+        resultLine.config(text=str(calc.calc(inputLine["text"],portion=True)))
     # print("Label", inputLine["text"])
 
 
