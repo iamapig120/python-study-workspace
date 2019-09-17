@@ -13,9 +13,19 @@ resultLine = tkinter.Label(window, justify=tkinter.RIGHT,
                            text='0', font="Helvetica 24", padx=8, anchor="e")
 resultLine.place(x=0, y=buttonSize/2, width=buttonSize*4, height=buttonSize)
 
+calced_state = 0
+
 
 def appendText(text: str):
+    global calced_state
     # print("Input:", text)
+    if calced_state:
+        if calced_state == 1:
+            inputLine.config(text=resultLine["text"])
+        else:
+            inputLine.config(text="0")
+        resultLine.config(text="0")
+        calced_state = 0
     if text == "AC":
         # inputLine.config(text=inputLine["text"][:-1])
         # if len(inputLine["text"]) == 0:
@@ -27,11 +37,15 @@ def appendText(text: str):
         print("Calc", inputLine["text"])
         try:
             result = str(calc.calc(inputLine["text"]))
+            calced_state = 1
         except calc.CalcError as err:
             result = err.errorinfo
+            calced_state = 2
         finally:
             resultLine.config(text=result)
             inputLine.config(text=inputLine["text"] + text)
+            if not calced_state:
+                calced_state = -1
     elif inputLine["text"] == "0":
         inputLine.config(text=text)
         resultLine.config(text=str(calc.calc(inputLine["text"], portion=True)))
