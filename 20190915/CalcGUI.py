@@ -1,17 +1,30 @@
 import tkinter
+import tkinter.ttk
+import tkinter.font
 import CalculatorV2 as calc
 buttonSize = 64
 window = tkinter.Tk()
+window.style = tkinter.ttk.Style()
+window.style.theme_use("classic")
 window.geometry(""+str(buttonSize*4)+"x"+str(buttonSize*6+buttonSize//2))
 window.resizable(False, False)
 window.title("计算器")
-inputLine = tkinter.Label(window, justify=tkinter.RIGHT,
-                          text='', font="Helvetica 12", padx=8, anchor="e")
-inputLine.place(x=0, y=buttonSize//8, width=buttonSize*4, height=buttonSize//2)
 
-resultLine = tkinter.Label(window, justify=tkinter.RIGHT,
-                           text='0', font="Helvetica 24", padx=8, anchor="e")
-resultLine.place(x=0, y=buttonSize//2, width=buttonSize*4, height=buttonSize)
+input_line_fnt = tkinter.font.Font(
+    family=('微软雅黑'), size=12, weight=tkinter.font.NORMAL)
+result_line_fnt = tkinter.font.Font(
+    family=('微软雅黑'), size=24, weight=tkinter.font.NORMAL)
+input_btn_fnt = tkinter.font.Font(
+    family=('微软雅黑'), size=12, weight=tkinter.font.NORMAL)
+
+input_line = tkinter.Label(window, justify=tkinter.RIGHT,
+                           text='', font=input_line_fnt, padx=8, anchor="e")
+input_line.place(x=0, y=buttonSize//8, width=buttonSize *
+                 4, height=buttonSize//2)
+
+result_line = tkinter.Label(window, justify=tkinter.RIGHT,
+                            text='0', font=result_line_fnt, padx=8, anchor="e")
+result_line.place(x=0, y=buttonSize//2, width=buttonSize*4, height=buttonSize)
 
 calced_state = 0
 symbols = ['+', '-', '*', '/', '%', '^']
@@ -22,53 +35,59 @@ def appendText(text: str):
     # print("Input:", text)
     if calced_state:
         if calced_state == 1:
-            inputLine.config(text=resultLine["text"])
+            input_line.config(text=result_line["text"])
         else:
-            inputLine.config(text="")
-        resultLine.config(text="0")
+            input_line.config(text="")
+        result_line.config(text="0")
         calced_state = 0
     if text == "AC":
         # inputLine.config(text=inputLine["text"][:-1])
         # if len(inputLine["text"]) == 0:
         #     inputLine.config(text="0")
-        inputLine.config(text="")
-        resultLine.config(text="0")
+        input_line.config(text="")
+        result_line.config(text="0")
     elif text == "=":
         result: str
-        print("Calc", inputLine["text"])
+        print("Calc", input_line["text"])
         try:
-            result = str(calc.calc(inputLine["text"]))
+            result = str(calc.calc(input_line["text"]))
             calced_state = 1
         except calc.CalcError as err:
             result = err.errorinfo
             calced_state = 2
         finally:
-            resultLine.config(text=result)
-            inputLine.config(text=inputLine["text"] + text)
+            result_line.config(text=result)
+            input_line.config(text=input_line["text"] + text)
             if not calced_state:
                 calced_state = -1
-    elif inputLine["text"] == "":
+    elif input_line["text"] == "":
         if text in symbols:
             if not text == '-':
-                inputLine.config(text="0")
-        inputLine.config(text=inputLine["text"] + text)
-        resultLine.config(text=str(calc.calc(inputLine["text"], portion=True)))
+                input_line.config(text="0")
+        input_line.config(text=input_line["text"] + text)
+        result_line.config(
+            text=str(calc.calc(input_line["text"], portion=True)))
     else:
-        inputLine.config(text=inputLine["text"] + text)
+        input_line.config(text=input_line["text"] + text)
         try:
-            resultLine.config(
-                text=str(calc.calc(inputLine["text"], portion=True)))
+            result_line.config(
+                text=str(calc.calc(input_line["text"], portion=True)))
         except calc.CalcError as err:
-            resultLine.config(text=err.errorinfo)
+            result_line.config(text=err.errorinfo)
             calced_state = 2
     # print("Label", inputLine["text"])
 
 
-buttons = [tkinter.Button(window, text=t) for t in [
+buttons = [tkinter.Button(window, text=t, font=input_btn_fnt) for t in [
     '%', '^', 'AC', '/', '7', '8', '9', '*', '4', '5', '6', '-', '1', '2', '3', '+', '(', ')', '0', '=']]
 for index, btn in enumerate(buttons):
     btn.place(x=index % 4 * buttonSize, y=buttonSize + index //
               4 * buttonSize + buttonSize/2, width=buttonSize, height=buttonSize)
+    btn.config(background = "#F3F3F3")
     btn.bind("<Button-1>", lambda e: appendText(e.widget["text"]))
+    btn.bind("<Button-1>", lambda e: appendText(e.widget.config(background = "#D0D0D0")))
+    btn.bind("<ButtonRelease-1>", lambda e: appendText(e.widget.config(background = "#DDDDDD")))
+    btn.bind("<Enter>", lambda e: e.widget.config(background = "#DDDDDD"))
+    btn.bind("<Leave>", lambda e: e.widget.config(background = "#F3F3F3"))
 # inputLine
 window.mainloop()
