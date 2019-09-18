@@ -65,8 +65,12 @@ def appendText(text: str):
             if not text == '-':
                 input_line.config(text="0")
         input_line.config(text=input_line["text"] + text)
-        result_line.config(
-            text=str(calc.calc(input_line["text"], portion=True)))
+        try:
+            result_line.config(
+                text=str(calc.calc(input_line["text"], portion=True)))
+        except calc.CalcError as err:
+            result_line.config(text=err.errorinfo)
+            calced_state = 2
     else:
         input_line.config(text=input_line["text"] + text)
         try:
@@ -78,16 +82,28 @@ def appendText(text: str):
     # print("Label", inputLine["text"])
 
 
-buttons = [tkinter.Button(window, text=t, font=input_btn_fnt) for t in [
-    '%', '^', 'AC', '/', '7', '8', '9', '*', '4', '5', '6', '-', '1', '2', '3', '+', '(', ')', '0', '=']]
+btn_chars = ['%', '^', 'AC', '/', '7', '8', '9', '*', '4',
+             '5', '6', '-', '1', '2', '3', '+', '(', ')', '0', '=']
+buttons = [tkinter.Button(window, text=text, font=input_btn_fnt)
+           for text in btn_chars]
+
+
+def key_press_event(e):
+    if e.char in btn_chars:
+        return appendText(e.char)
+    if e.keycode == 13 or e.keycode == 108:
+        return appendText('=')
+    if e.keycode == 8:
+        return appendText('AC')
+
+
+window.bind("<Key>", key_press_event)
 for index, btn in enumerate(buttons):
     btn.place(x=index % 4 * buttonSize, y=buttonSize + index //
               4 * buttonSize + buttonSize/2, width=buttonSize, height=buttonSize)
-    btn.config(background = "#F3F3F3")
+    btn.config(background="#F3F3F3")
     btn.bind("<Button-1>", lambda e: appendText(e.widget["text"]))
-    btn.bind("<Button-1>", lambda e: appendText(e.widget.config(background = "#D0D0D0")))
-    btn.bind("<ButtonRelease-1>", lambda e: appendText(e.widget.config(background = "#DDDDDD")))
-    btn.bind("<Enter>", lambda e: e.widget.config(background = "#DDDDDD"))
-    btn.bind("<Leave>", lambda e: e.widget.config(background = "#F3F3F3"))
+    btn.bind("<Enter>", lambda e: e.widget.config(background="#DDDDDD"))
+    btn.bind("<Leave>", lambda e: e.widget.config(background="#F3F3F3"))
 # inputLine
 window.mainloop()
