@@ -30,11 +30,17 @@ calced_state = 0
 symbols = ['+', '-', '*', '/', '%', '^']
 
 
+btn_chars = ['%', '^', 'AC', '/', '7', '8', '9', '*', '4',
+             '5', '6', '-', '1', '2', '3', '+', '(', ')', '0', '=']
+buttons = [tkinter.Button(window, text=text, font=input_btn_fnt)
+           for text in btn_chars]
+
+
 def appendText(text: str):
     global calced_state
     # print("Input:", text)
     if calced_state:
-        if calced_state == 1:
+        if calced_state == 1 and text in symbols:
             input_line.config(text=result_line["text"])
         else:
             input_line.config(text="")
@@ -46,6 +52,15 @@ def appendText(text: str):
         #     inputLine.config(text="0")
         input_line.config(text="")
         result_line.config(text="0")
+    elif text == "Del":
+        if len(input_line["text"]):
+            input_line.config(text=input_line["text"][:-1])
+            try:
+                result_line.config(
+                    text=str(calc.calc(input_line["text"], portion=True)))
+            except calc.CalcError as err:
+                result_line.config(text=err.errorinfo)
+                # calced_state = 2
     elif text == "=":
         result: str
         print("Calc", input_line["text"])
@@ -78,14 +93,12 @@ def appendText(text: str):
                 text=str(calc.calc(input_line["text"], portion=True)))
         except calc.CalcError as err:
             result_line.config(text=err.errorinfo)
-            calced_state = 2
+            # calced_state = 2
+    if calced_state or not len(input_line["text"]):
+        buttons[2].config(text="AC")
+    else:
+        buttons[2].config(text="Del")
     # print("Label", inputLine["text"])
-
-
-btn_chars = ['%', '^', 'AC', '/', '7', '8', '9', '*', '4',
-             '5', '6', '-', '1', '2', '3', '+', '(', ')', '0', '=']
-buttons = [tkinter.Button(window, text=text, font=input_btn_fnt)
-           for text in btn_chars]
 
 
 def key_press_event(e):
@@ -94,7 +107,7 @@ def key_press_event(e):
     if e.keycode == 13 or e.keycode == 108:
         return appendText('=')
     if e.keycode == 8:
-        return appendText('AC')
+        return appendText('Del')
 
 
 window.bind("<Key>", key_press_event)
