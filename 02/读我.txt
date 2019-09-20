@@ -1,0 +1,6 @@
+CalcGUI.py
+----计算器GUI程序，计算器入口程序
+CalculatorV2.py
+----计算器运算模块，直接执行无效
+Pascal's triangle.py
+----杨辉三角形程序，可在源代码设置正序或倒序输出
