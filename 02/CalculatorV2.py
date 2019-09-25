@@ -136,5 +136,6 @@ def calc(formula: str, *, portion=False) -> int or str:
         return 0
 
 
-# while True:
-#     print("运算结果\n" + str(calc(input("输入算式\n")))+'\n')
+if __name__ == "__main__":
+    while True:
+        print("运算结果\n" + str(calc(input("输入算式\n")))+'\n')
